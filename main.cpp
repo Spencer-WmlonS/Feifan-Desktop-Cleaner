@@ -144,8 +144,8 @@ void newconfig()
 	//doFileEnumeration(dir, TRUE, TRUE, myEnumerateFunc, allPath);
 	doFileEnumeration(deskdest, TRUE, TRUE, myEnumerateFunc, allPath);
 
-	wcout << deskdest << endl;
-	cout << "输出所有文件的路径：" << endl;
+	//wcout << deskdest << endl;
+	//cout << "输出所有文件的路径：" << endl;
 	FILE *fp = freopen(configN, "w+",stdout);
 	wcout << allPath.size() << endl;
 	for (size_t i = 0; i < allPath.size(); i++)
@@ -164,8 +164,8 @@ void clean()
 	//doFileEnumeration(dir, TRUE, TRUE, myEnumerateFunc, allPath);
 	doFileEnumeration(deskdest, TRUE, TRUE, myEnumerateFunc, allPath);
 
-	wcout << deskdest << endl;
-	cout << "输出所有文件的路径：" << endl;
+	//wcout << deskdest << endl;
+	//cout << "输出所有文件的路径：" << endl;
 	//FILE* fp = freopen(configS, "w+", stdout);
 	for (size_t i = 0; i < allPath.size(); i++)
 	{
@@ -176,7 +176,7 @@ void clean()
 			Movefile(temppath , L"D:\\test", NULL);
 			//system("pause");
 		}
-		wcout << perPath << endl;
+		//wcout << perPath << endl;
 
 	}
 	//fclose(fp);
@@ -185,34 +185,62 @@ void clean()
 
 int main()
 {
+	string con1;
 	int con = 0;
 	//cout << "Enter a directory: ";
 	//cin.getline(dir, 200);
 	//GetCurrentDirectory(MAXLEN,dir);
+	FILE* sout;
+
+	cout << "我唔使你炒而系我炒你！我 宜家 劈炮唔捞啦，你跪喺度翳我返黎我都唔返黎啊！" << endl << " A.放下枪" << endl << " B.开枪" << endl <<" C.吔屎啦！ 梁非凡 ！" <<endl<<" D.钝角"<<endl;
 	while (1) {
-		con = -1;
-		FILE *sin=freopen("CON","r",stdin);
-		scanf("%d", &con);
+		FILE* sin = freopen("CON","r",stdin);
+		sout = freopen("CON", "w", stdout);
+		//scanf("%d", &con);
+		cin >> con1;
 		fclose(sin);
-		if (con == 1)
+		fclose(sout);
+		
+		if (con1.compare("A") == 0) {
+			sout = freopen("CON", "w", stdout);
+			cout<<"“得了！唔好讲，唔使担心我，个天帮我呃！ 我储够钱做小生意了， 我迟啲搵埋你哋出去帮手。”"<<endl;
+			fclose(sout);
 			newconfig();
-		else if (con == 2) {
+		}
+			
+		else if (con1.compare("C")==0) {
 			FILE* fp = fopen(configN, "r");
 			if (fp == NULL) {
-				printf("NO CONFIG FILE");
+				fclose(fp);
+				sout = freopen("CON", "w", stdout);
+				cout<<"再乱点刘醒杀了你"<<endl;
+				fclose(sout);
 				//not exist, or you don't have read permission
 			}
 			else
 			{
 				fclose(fp);
 				clean();
-				printf("done");
+				sout = freopen("CON", "w", stdout);
+				cout << "“醒哥，唔使等迟啲喇，你走咗我哋喺度做仲有咩意思啊，我哋都一齐劈炮”" << endl<<"“吔屎啦！ 梁非凡 ！”";
+				//system("pause");
+				fclose(sout);
+				break;
 			}
 		}
-		else if (con == 0)
+		else if (con1.compare("B") == 0) {
+			sout = freopen("CON", "w", stdout);
+			printf("砰！\n");
+			fclose(sout);
+			//system("pause");
 			break;
+		}
 		else
-			printf("?");
+		{
+			sout = freopen("CON", "w", stdout);
+			printf("? \n");
+			fclose(sout);
+		}
 	}
 	
 
