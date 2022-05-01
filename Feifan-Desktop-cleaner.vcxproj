@@ -145,6 +145,13 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="enumfile.h" />
+    <ClInclude Include="resource.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Feifan-Desktop-Cleaner.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="gif\tb001.ico" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
