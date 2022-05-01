@@ -173,7 +173,8 @@ void clean()
 		if (checkfile(perPath)) 
 		{
 			LPCWSTR temppath = perPath.c_str();
-			Movefile(temppath , L"D:\\test", NULL);
+			CreateDirectory(L"D:\\地面", NULL);
+			Movefile(temppath , L"D:\\地面", NULL);
 			//system("pause");
 		}
 		//wcout << perPath << endl;
