@@ -44,8 +44,11 @@ void doFileEnumeration(PWCHAR lpPath, BOOL bRecursion, BOOL bEnumFiles, Enumerat
 				continue;
 			}
 
-			if (pFunc && bEnumFiles != bIsDirectory)
+			if (pFunc)// && bEnumFiles != bIsDirectory)
 			{
+				if (bEnumFiles == bIsDirectory) {
+					wcscat(tempPath, L"\\");
+				}
 				bUserReture = pFunc(tempPath, pUserData);
 				if (bUserReture == FALSE)
 				{
@@ -59,6 +62,7 @@ void doFileEnumeration(PWCHAR lpPath, BOOL bRecursion, BOOL bEnumFiles, Enumerat
 
 			if (bIsDirectory && bRecursion) //ÊÇ×ÓÄ¿Â¼
 			{
+
 				//doFileEnumeration(tempPath, bRecursion, bEnumFiles, pFunc, pUserData);
 			}
 
