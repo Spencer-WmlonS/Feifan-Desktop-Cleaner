@@ -1,8 +1,11 @@
 #include <iostream>
+#include <cstdio>
 #include <vector>
 #include <cstring>        // for strcat()
 #include <io.h>
 #include <shlobj.h>
+#include <windows.h>
+#include <Shobjidl.h>
 #pragma comment(lib, "shell32.lib") 
 #include <stdio.h>
 #include <stdbool.h>
@@ -11,11 +14,81 @@
 using namespace std;
 #define MAXLEN 512
 char configN[] = "file.list";
+//char configS[] = "filecheck.list";
 TCHAR deskdest[255];
 WCHAR dir[MAXLEN];
 vector<wstring> allPath;
 
 vector<char*>  getFilesList(const char* dir);
+
+HRESULT Movefile(__in PCWSTR pszSrcItem, __in PCWSTR pszDest, PCWSTR pszNewName)
+{
+	//
+	// Initialize COM as STA.
+	//
+	HRESULT hr = CoInitializeEx(NULL, COINIT_APARTMENTTHREADED | COINIT_DISABLE_OLE1DDE);
+	if (SUCCEEDED(hr))
+	{
+		IFileOperation* pfo;
+
+		//
+		// Create the IFileOperation interface
+		//
+		hr = CoCreateInstance(CLSID_FileOperation,
+			NULL,
+			CLSCTX_ALL,
+			IID_PPV_ARGS(&pfo));
+		if (SUCCEEDED(hr))
+		{
+			// Set the operation flags. Turn off all UI from being shown to the
+			// user during the operation. This includes error, confirmation,
+			// and progress dialogs.
+			hr = pfo->SetOperationFlags(FOF_NO_UI);
+			if (SUCCEEDED(hr))
+			{
+				// Create an IShellItem from the supplied source path.
+				IShellItem* psiFrom = NULL;
+				hr = SHCreateItemFromParsingName(pszSrcItem,
+					NULL,
+					IID_PPV_ARGS(&psiFrom));
+				if (SUCCEEDED(hr))
+				{
+					IShellItem* psiTo = NULL;
+					if (NULL != pszDest)
+					{
+						// Create an IShellItem from the supplied
+						// destination path.
+						hr = SHCreateItemFromParsingName(pszDest,
+							NULL,
+							IID_PPV_ARGS(&psiTo));
+					}
+
+					if (SUCCEEDED(hr))
+					{
+						// Add the operation
+						hr = pfo->MoveItem(psiFrom, psiTo, pszNewName, NULL);
+						if (NULL != psiTo)
+						{
+							psiTo->Release();
+						}
+					}
+					psiFrom->Release();
+				}
+
+				if (SUCCEEDED(hr))
+				{
+					// Perform the operation to copy the file.
+					hr = pfo->PerformOperations();
+				}
+			}
+			// Release the IFileOperation interface.
+			pfo->Release();
+		}
+
+		CoUninitialize();
+	}
+	return hr;
+}
 
 BOOL WINAPI myEnumerateFunc(PWCHAR lpFileOrPath, vector<wstring>& pUserData)
 {
@@ -46,6 +119,24 @@ BOOL WINAPI myEnumerateFunc(PWCHAR lpFileOrPath, vector<wstring>& pUserData)
 //		return false;
 //}
 
+bool checkfile(wstring perPath)
+{
+	int size = 0;
+	wstring temp ;
+	FILE* fp = freopen(configN, "r", stdin);
+	cin >> size;
+	for (size_t i = 0; i < size; i++)
+	{
+		wcin >> temp;
+		if (perPath.compare(temp) == 0) {
+			fclose(fp);
+			return 0;
+		}
+	}
+	fclose(fp);
+	return 1;
+}
+
 void newconfig()
 {
 	SHGetSpecialFolderPath(0, deskdest, CSIDL_DESKTOPDIRECTORY, 0);
@@ -56,6 +147,7 @@ void newconfig()
 	wcout << deskdest << endl;
 	cout << "输出所有文件的路径：" << endl;
 	FILE *fp = freopen(configN, "w+",stdout);
+	wcout << allPath.size() << endl;
 	for (size_t i = 0; i < allPath.size(); i++)
 	{
 		wstring perPath = allPath.at(i);
@@ -65,14 +157,63 @@ void newconfig()
 	fclose(fp);
 }
 
+void clean()
+{
+	SHGetSpecialFolderPath(0, deskdest, CSIDL_DESKTOPDIRECTORY, 0);
+
+	//doFileEnumeration(dir, TRUE, TRUE, myEnumerateFunc, allPath);
+	doFileEnumeration(deskdest, TRUE, TRUE, myEnumerateFunc, allPath);
+
+	wcout << deskdest << endl;
+	cout << "输出所有文件的路径：" << endl;
+	//FILE* fp = freopen(configS, "w+", stdout);
+	for (size_t i = 0; i < allPath.size(); i++)
+	{
+		wstring perPath = allPath.at(i);
+		if (checkfile(perPath)) 
+		{
+			LPCWSTR temppath = perPath.c_str();
+			Movefile(temppath , L"D:\\test", NULL);
+			//system("pause");
+		}
+		wcout << perPath << endl;
+
+	}
+	//fclose(fp);
+
+}
+
 int main()
 {
-	
+	int con = 0;
 	//cout << "Enter a directory: ";
 	//cin.getline(dir, 200);
 	//GetCurrentDirectory(MAXLEN,dir);
-
-	newconfig();
+	while (1) {
+		con = -1;
+		FILE *sin=freopen("CON","r",stdin);
+		scanf("%d", &con);
+		fclose(sin);
+		if (con == 1)
+			newconfig();
+		else if (con == 2) {
+			FILE* fp = fopen(configN, "r");
+			if (fp == NULL) {
+				printf("NO CONFIG FILE");
+				//not exist, or you don't have read permission
+			}
+			else
+			{
+				fclose(fp);
+				clean();
+				printf("done");
+			}
+		}
+		else if (con == 0)
+			break;
+		else
+			printf("?");
+	}
 	
 
 	return 0;
