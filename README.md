@@ -5,10 +5,11 @@
 ## Getting Started
 * Manually clean your desktop before first use
 * ~~Conversation with 梁非凡~~
-* Choose A to create a config
-* Choose C 梁非凡 will transfer redundant desktop programs to  ```D:\地面```
+* Choose ```A``` to create a config
+* Choose ```C``` 梁非凡 will transfer redundant desktop programs to  ```D:\地面```
 
 ## Contributors ✨
+#### [???](https://???.??? "???")
 #### [pan_jinquan](https://panjinquan.blog.csdn.net/ "肥肠感谢这位大佬")
 #### [The Laughing Uncle](https://blog.csdn.net/aixiaodeshushu "肥肠感谢这位大佬")
 #### [JTY](http://img.coozhi.com/upload/image/202107/19170010-1693.jpg.png "114514")
